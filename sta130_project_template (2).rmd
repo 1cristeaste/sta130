@@ -1,0 +1,217 @@
+---
+title: "Project title"
+author: "Team members names, tutorial section, and group number"
+subtitle: The subtitle of my project
+output:
+  ioslides_presentation: default
+  widescreen: yes
+---
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# echo=FALSE will stop the code chunk from appearing in the knit document
+# warning=FALSE and message=FALSE will stop R messages from appearing in the knit document
+library(tidyverse)
+```
+
+# A Section Heading on its own page
+
+## A heading that starts on a new page
+
+This document shows a few basics on making slides with R markdown.
+
+To produce the slides, Knit to HMTL (ioslides).
+
+(You can also knit to PDF if you have LaTeX installed on your computer.)
+
+
+---
+
+Three dashes starts a new page when it is not started by a new header.
+
+---
+
+### This is a heading that doesn't start a new page
+
+You can make text **bold** or in *italics*.
+
+To make bullet points, start the points after a blank line:
+ 
+- point one
+- another point
+
+
+---
+
+Include some R output
+
+```{r}
+ggplot(cars, aes(x=speed, y=dist)) + geom_point()
+```
+
+---
+
+Include the output without showing the code and R messages (which is what you want for your poster presentation).  This R code chunk also changes the size of the plot.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=3}
+ggplot(cars, aes(x=speed, y=dist)) + geom_point()
+```
+
+This plot shows that there is a positive relationship between distance and speed.
+
+## Read more
+
+There is more information on R markdown on the course website at [https://ntaback.github.io/UofT_STA130/Rmarkdownforclassreports.html](https://ntaback.github.io/UofT_STA130/Rmarkdownforclassreports.html)
+
+For more on creating an `ioslides` presentation see [https://rmarkdown.rstudio.com/ioslides_presentation_format.html](https://rmarkdown.rstudio.com/ioslides_presentation_format.html)
+
+# Headings you should include in your project
+
+## Introduction
+
+Include here a few sentences to introduce the problem and provide context. You might want to briefly summarize the data in words (what is the data and what is it used for). You can present the questions you are investigating here. 
+```{r}
+neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
+  mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday"| occurrencedayofweek == "Saturday", yes = "Weekend", no = "Weekday")) %>%
+  mutate(time_of_day= ifelse(occurrencehour >= 18|occurrencehour <= 6, yes = "Night", no= "Day"))
+
+glimpse(neighbourhood)
+```
+
+```{r}
+neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar()
+neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar()
+neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar()
+neighbourhood %>% ggplot(aes(x = season)) + geom_bar()
+```
+
+```{r}
+neighbourhood %>% 
+  filter(!is.na(week_end_or_day)) %>%
+  ggplot(aes(x = week_end_or_day)) + geom_bar()
+```
+
+```{r}
+#simulation
+n <- 18178 
+repetitions <- 1000
+sim <- rep(NA, repetitions)
+
+set.seed(1071)
+for (i in 1:repetitions) {
+  sim_weekday_or_end <- sample(c("Weekday", "Weekend"),
+       size = n,
+       prob = c(5/7, 2/7),
+       replace = TRUE) 
+  sim_p <- sum(sim_weekday_or_end == "Weekday") / n
+  sim[i] <- sim_p
+}
+#build a plot with simulated data
+sim <- data_frame(p_weekdays = sim)
+sim %>% ggplot(aes(x = p_weekdays)) +
+  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "grey") +
+  labs(x = "Proportion weekdays in 18178 days" )
+
+
+```
+
+```{r}
+neighbourhood %>% filter(!is.na(week_end_or_day))%>%
+  summarise(n(),
+            n_weekday = sum(week_end_or_day == "Weekday"),
+            prop = n_weekday / n())
+```
+```{r}
+#p_hat
+13167/(13167+5008)
+#     = 0.7244567
+#test statistic
+      5/7 - (0.7243371 - 5/7)
+#     = 0.7042343
+#p-value
+      sim %>% filter(p_weekdays >= 0.7244567 | p_weekdays <= 0.7042343) %>%
+        summarise(p_value = n() / repetitions)
+#     = 0.004
+```
+
+
+```{r}
+neighbourhood %>% 
+  filter(!is.na(time_of_day)) %>%
+  ggplot(aes(x = time_of_day)) + geom_bar()
+```
+
+```{r}
+#simulation
+n <- 18178
+repetitions <- 1000
+sim <- rep(NA, repetitions)
+
+set.seed(1071)
+for (i in 1:repetitions) {
+  sim_time_of_day <- sample(c("Day", "Night"),
+       size = n,
+       prob = c(0.5, 0.5),
+       replace = TRUE) 
+  sim_p <- sum(sim_time_of_day == "Day") / n
+  sim[i] <- sim_p
+}
+#build a plot with simulated data
+sim <- data_frame(p_day = sim)
+ggplot(sim, aes(p_day)) +
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") + labs(x = "Proportion day time in 18178 days" )
+```
+
+```{r}
+neighbourhood %>% filter(!is.na(time_of_day))%>%
+  summarise(n(),
+            n_daytime = sum(time_of_day == "Day"),
+            prop = n_daytime / n())
+
+```
+
+```{r}
+#p_hat
+6509/(18178)
+#     = 0.3580702
+#test statistic
+      0.5 - (0.3580702 - 0.5/7)
+#     = 0.2133584
+#p-value
+      sim %>% filter(p_day >= 0.3580702 | p_day <= 0.2133584) %>%
+        summarise(p_value = n() / repetitions)
+#     = 0.004
+
+```
+
+
+## Objectives (optional)
+
+You can list the questions of interest in complete English sentences here to highlight them. 
+
+## Data Summary (optional)
+
+Here you can explain how you cleaned the data and created variables suitable for answering your questions. 
+You can also include graphical displays that either motivated or address the questions.
+
+## Statistical Methods
+
+Describe here what you have done to the data without presenting any results (output). If you want to indicate variables by symbols or variable names, define them here. 
+
+## Results
+
+Present the main results here, in order of importance, related to the questions asked. You might use tables or graphs, or other ways to summarize your results.
+
+## Conclusion
+
+Give your main conclusions here. Follow the order of questions you presented. 
+
+Here you can also mention any additional considerations, concerns, or issues you might have. For example, if the results were unexpected, you can discuss this and perhaps offer possible explanations.
+
+## Acknowledgements (optional)
+
+If you received any help from someone other than your team members you can acknowledge them. For example:   
+*The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
+
+
+
