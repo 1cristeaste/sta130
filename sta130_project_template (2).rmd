@@ -119,7 +119,7 @@ sim %>% ggplot(aes(x = p_weekdays)) +
 neighbourhood %>% filter(!is.na(week_end_or_day))%>%
   summarise(n(),
             n_weekday = sum(week_end_or_day == "Weekday"),
-            prop = n_weekday / n())
+            prop = n_weekday / n()) 
 ```
 ```{r}
 #p_hat
@@ -214,4 +214,4 @@ If you received any help from someone other than your team members you can ackno
 *The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
 
 
-
+#nicole
