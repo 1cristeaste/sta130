@@ -213,5 +213,3 @@ Here you can also mention any additional considerations, concerns, or issues you
 If you received any help from someone other than your team members you can acknowledge them. For example:   
 *The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
 
-
-#nicole
