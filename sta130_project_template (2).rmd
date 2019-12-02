@@ -82,7 +82,6 @@ glimpse(neighbourhood)
 neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar()
 neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar()
 neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar()
-neighbourhood %>% ggplot(aes(x = season)) + geom_bar()
 ```
 
 ```{r}
