@@ -40,24 +40,7 @@ To make bullet points, start the points after a blank line:
 - point one
 - another point
 
-
 ---
-
-Include some R output
-
-```{r}
-ggplot(cars, aes(x=speed, y=dist)) + geom_point()
-```
-
----
-
-Include the output without showing the code and R messages (which is what you want for your poster presentation).  This R code chunk also changes the size of the plot.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.height=3}
-ggplot(cars, aes(x=speed, y=dist)) + geom_point()
-```
-
-This plot shows that there is a positive relationship between distance and speed.
 
 ## Read more
 
@@ -79,9 +62,9 @@ glimpse(neighbourhood)
 ```
 
 ```{r}
-neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar()
-neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar()
-neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar()
+neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar() + ggtitle("Occurence Month")
+neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar() + ggtitle("Occurence Day of Week")
+neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar() + ggtitle("Occurence Hour")
 ```
 
 ```{r}
