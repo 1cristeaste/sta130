@@ -1,7 +1,7 @@
 
 ---
-title: "The effect of Time on Number of Auto Thefts"
-author: "Stephanie Cristea, Nicole Sin, Johnson Vo, Lily Zuo, TUT107, group number: 1"
+title: "The Inclination for Auto Thefts in Relation to Time"
+author: "Stephanie Cristea, Nicole Sin, Johnson Vo, Lily Zuo, TUT107, Group Number: 1"
 subtitle: "Based on Auto Thefts data from Toronto provided by the the Toronto POlice Service and from the years 2014-2018"
 output:
   ioslides_presentation: default
@@ -23,8 +23,8 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 
 ## Goals
 
-- Analyze the importance of time with regard to the number of auto thefts
-- Determine when the public should take better precautions protecting their cars 
+- Analyze whether time acts as a factor in the number of auto thefts - is there an inclination to when these crimes occur? 
+- Determine peak time when these crimes occur; when the public should take better precautions protecting their cars 
 - Determine when police officers should be more prepared for auto-thefts based on when they take place more often
 
 
@@ -243,3 +243,37 @@ filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
 summarise(p_value = n() / repetitions)
 ```
 
+```{r}
+#linear regression between time(occurrencehour) and auto thefts
+#mod_thefts <- lm(occurrencehour ~ occurrenceday, data = auto_thefts)
+#summary(mod_thefts)$coefficients
+
+#auto_thefts %>% ggplot(aes(x=occurrenceday, y=occurrencehour)) + geom_point() +
+#geom_smooth(method="lm", se=FALSE) + theme_minimal()
+
+#This stuff above doesn't work, can't do regression on auto thefts.
+
+neighbourhood1 <- neighbourhood %>%
+   mutate(hot_or_not = ifelse(occurrencemonth == "April"|occurrencemonth == "May"|occurrencemonth == "June"|occurrencemonth == "July"|occurrencemonth == "August"|occurrencemonth == "September", yes= "Yes", no = "No")) 
+
+tree1 <- rpart(hot_or_not ~ occurrencehour, data = neighbourhood1)
+plot(as.party(tree1), gp=gpar(cex=0.8), type="simple")
+
+#Regression on the time of day(hour) when auto theft occurs and whether they occur in a warm month (April - September) or a cold month. #Basically the graph says in general, crimes occur more often at night during warm months, and occur during daytimes during cold months. 
+
+n <- nrow(neighbourhood1)
+
+set.seed(1071)
+training_indices <- sample(1:n, size=round(0.8*n))
+train <- neighbourhood1[training_indices,]
+test <- neighbourhood1[-training_indices,]
+
+train_tree <- rpart(hot_or_not ~ occurrencehour, data = train)
+plot(as.party(train_tree), type="simple", gp=gpar(cex=0.8))
+
+prediction_matrix <- predict(object = train_tree, newdata = test, type = "class")            
+table(prediction_matrix, test$hot_or_not)
+
+#Here we decide to test our classification tree using a 80/20 percent split. According to the prediction tree, we can calculate our test positives and negatives etc.
+
+#Accurary = (1000 + 943) / 3636 = 0.534. Not incredibly accurate, but in conjuction with the classification tree, provides some inclination for when crimes will occur depending on the month. 
