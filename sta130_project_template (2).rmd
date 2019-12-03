@@ -15,12 +15,10 @@ output:
 # warning=FALSE and message=FALSE will stop R messages from appearing in the knit document
 library(tidyverse)
 auto_thefts <- read.csv("auto_thefts.csv")
-
 neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
-  mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday"| occurrencedayofweek == "Saturday", yes = "Weekend", no = "Weekday")) %>%
+  mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday    "| occurrencedayofweek == "Saturday  ", yes = "Weekend", no = "Weekday")) %>%
   mutate(time_of_day= ifelse(occurrencehour >= 18|occurrencehour <= 6, yes = "Night", no= "Day"))
 ```
-
 ## Goals
 
 - Analyze whether time acts as a factor in the number of auto thefts - is there an inclination to when these crimes occur? 
