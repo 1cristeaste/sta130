@@ -61,7 +61,7 @@ Does the number of auto thefts show a significant correlation depending on wheth
 ```{r, echo=FALSE, warning=FALSE}
 neighbourhood %>% 
   filter(!is.na(week_end_or_day)) %>%
-  ggplot(aes(x = week_end_or_day)) + geom_bar()+
+  ggplot(aes(x = week_end_or_day)) + geom_bar(color = "black", fill = "pink")+
   ggtitle("Number of Auto Thefts based on Weekdays vs Weekends")+
   labs (x = "Weekday vs Weekends", y = "Number of Auto Thefts")
 ```
@@ -175,8 +175,8 @@ for (i in 1:repetitions) {
 }
 #build a plot with simulated data
 sim <- data_frame(p_day = sim)
-ggplot(sim, aes(p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") + labs(x = "Proportion day time in 18178 days" )
+sim %>% ggplot(aes(x = p_day)) +
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + labs(x = "Proportion day time in 18178 auto thefts" )
 ```
 
 ```{r}
@@ -192,12 +192,12 @@ neighbourhood %>% filter(!is.na(time_of_day))%>%
 6509/(18178)
 #     = 0.3580702
 #test statistic
-      0.5 - (0.3580702 - 0.5/7)
-#     = 0.2133584
+      0.5 - (0.3580702 - 0.5)
+#     = 0.6419298
 #p-value
-      sim %>% filter(p_day >= 0.3580702 | p_day <= 0.2133584) %>%
+      sim %>% filter(p_day >= 0.6419298 | p_day <= 0.3580702) %>%
         summarise(p_value = n() / repetitions)
-#     = 0.004
+#     = 0
 ```
 
 
@@ -243,4 +243,4 @@ sim %>%
 filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
 summarise(p_value = n() / repetitions)
 ```
-p_value is 0.352 which is greater than 0.1, therefore there is no evidence against null hypthesis.
+
