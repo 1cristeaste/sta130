@@ -243,4 +243,4 @@ sim %>%
 filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
 summarise(p_value = n() / repetitions)
 ```
-
+p_value is 0.352 which is greater than 0.1, therefore there is no evidence against null hypthesis.
