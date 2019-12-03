@@ -39,11 +39,11 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 ---
 
 ```{r, echo=FALSE, warning=FALSE, fig.height = 3, fig.width= 4, .columns-2}
-neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
+neighbourhood %>% ggplot(aes(x = occurrencemonth, colour = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
   labs (x = "Month", y = "Number of Auto Thefts") + coord_flip()
-neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar() + ggtitle("Number of Auto Thefts Depending \non the Day of the Week")+
+neighbourhood %>% ggplot(aes(x = occurrencedayofweek, colour = week_end_or_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending \non the Day of the Week")+
   labs (x ="Day of the Week", y = "Number of Auto Thefts") + coord_flip()
-neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Time \nof the Day")+
+neighbourhood %>% ggplot(aes(x = occurrencehour, colour = time_of_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Time \nof the Day")+
   labs (x = "Time of the day (by hour)", y = "Number of Auto Thefts")
 ```
 
