@@ -77,7 +77,7 @@ Does the number of autothefts show a significant correlation depending on whethe
 ```{r, echo=FALSE, warning=FALSE}
 neighbourhood %>% 
   filter(!is.na(time_of_day)) %>%
-  ggplot(aes(x = time_of_day)) + geom_bar()+
+  ggplot(aes(x = time_of_day)) + geom_bar(color = "black", fill = "lightblue")+
   ggtitle("Number of Autothefts based on Daytime vs Nighttime")+
   labs(x= "Daytime vs Nighttime", y= "Number of Autothefts")
 ```
@@ -134,8 +134,7 @@ for (i in 1:repetitions) {
 #build a plot with simulated data
 sim <- data_frame(p_weekdays = sim)
 sim %>% ggplot(aes(x = p_weekdays)) +
-  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "grey") +
-  labs(x = "Proportion weekdays in 18178 days" )
+  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "pink") + ggtitle("Simulated Distribution of Weekdays") + labs(x = "Proportion weekdays in 18178 days" )
 ```
 
 ```{r}
@@ -176,7 +175,7 @@ for (i in 1:repetitions) {
 #build a plot with simulated data
 sim <- data_frame(p_day = sim)
 sim %>% ggplot(aes(x = p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + labs(x = "Proportion day time in 18178 auto thefts" )
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18178 auto thefts" )
 ```
 
 ```{r}
