@@ -199,3 +199,48 @@ neighbourhood %>% filter(!is.na(time_of_day))%>%
         summarise(p_value = n() / repetitions)
 #     = 0.004
 ```
+
+
+#simulation of the seasons
+```{r}
+# null hypothesis: the proportion of the incidence happened in spring and summer is 0.5.
+# alternative hypothesis: the proportion of the incidence happened in spring and summer is not 0.5.
+```
+$H_0: p = 0.1$
+$H_A: p \neq 0.1$
+
+```{r}
+# test statistic
+neighbourhood %>%
+  filter(!is.na(season)) %>%
+  summarise(n(),
+            n_springsummer = sum (season == "Spring_Summer"),
+            prop_springsummer = n_springsummer/n())
+```
+
+```{r}
+# simulation of incidence occurancein seasons. 
+n_observations <- 18178
+repetitions <- 1000
+simulated_stats <- rep(NA, repetitions)
+set.seed(1071)
+for (i in 1:repetitions)
+{
+new_sim <- sample(c("Spring_Summer", "Fall_Winter"),
+size = n_observations, prob=c(0.5,0.5), replace = TRUE)
+sim_p <- sum(new_sim == "Spring_Summer") / n_observations
+simulated_stats[i] <- sim_p
+}
+sim <- data_frame(p_springsummer = simulated_stats)
+sim %>% ggplot(aes(x = p_springsummer)) +
+geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") +
+xlab("simulated proportion that the incidence happened in spring and summer")
+```
+
+```{r}
+# estimated p_value
+sim %>%
+filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
+summarise(p_value = n() / repetitions)
+```
+
