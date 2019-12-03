@@ -118,7 +118,7 @@ If you received any help from someone other than your team members you can ackno
 *The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
 
 ```{r}
-#simulation for tiem of week
+#simulation for time of week
 n <- 18178 
 repetitions <- 1000
 sim <- rep(NA, repetitions)
