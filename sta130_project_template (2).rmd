@@ -1,6 +1,6 @@
 ---
 title: "Project title"
-author: "Team members names, tutorial section, and group number"
+author: "Stephanie Christea, Nicole Sin, Johnson Vo, Lily Zuo, TUT107, group number: 1"
 subtitle: The subtitle of my project
 output:
   ioslides_presentation: default
@@ -13,17 +13,6 @@ output:
 # warning=FALSE and message=FALSE will stop R messages from appearing in the knit document
 library(tidyverse)
 ```
-
-# A Section Heading on its own page
-
-## A heading that starts on a new page
-
-This document shows a few basics on making slides with R markdown.
-
-To produce the slides, Knit to HMTL (ioslides).
-
-(You can also knit to PDF if you have LaTeX installed on your computer.)
-
 
 ---
 
@@ -44,8 +33,6 @@ To make bullet points, start the points after a blank line:
 
 ## Read more
 
-There is more information on R markdown on the course website at [https://ntaback.github.io/UofT_STA130/Rmarkdownforclassreports.html](https://ntaback.github.io/UofT_STA130/Rmarkdownforclassreports.html)
-
 For more on creating an `ioslides` presentation see [https://rmarkdown.rstudio.com/ioslides_presentation_format.html](https://rmarkdown.rstudio.com/ioslides_presentation_format.html)
 
 # Headings you should include in your project
@@ -53,6 +40,7 @@ For more on creating an `ioslides` presentation see [https://rmarkdown.rstudio.c
 ## Introduction
 
 Include here a few sentences to introduce the problem and provide context. You might want to briefly summarize the data in words (what is the data and what is it used for). You can present the questions you are investigating here. 
+
 ```{r}
 neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
   mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday"| occurrencedayofweek == "Saturday", yes = "Weekend", no = "Weekday")) %>%
@@ -62,15 +50,20 @@ glimpse(neighbourhood)
 ```
 
 ```{r}
+#Histograms of occurrence month
 neighbourhood %>% ggplot(aes(x = occurrencemonth)) + geom_bar() + ggtitle("Occurence Month")
+#Histograms of occurrence day of week
 neighbourhood %>% ggplot(aes(x = occurrencedayofweek)) + geom_bar() + ggtitle("Occurence Day of Week")
+#Histograms of occurrence hour
 neighbourhood %>% ggplot(aes(x = occurrencehour)) + geom_bar() + ggtitle("Occurence Hour")
 ```
 
 ```{r}
+#Histograms of weekday and weekend
 neighbourhood %>% 
   filter(!is.na(week_end_or_day)) %>%
-  ggplot(aes(x = week_end_or_day)) + geom_bar()
+  ggplot(aes(x = week_end_or_day)) + geom_bar(color = "black", fill = "pink") + ggtitle("Weekend vs Weekday")
+
 ```
 
 ```{r}
@@ -88,26 +81,24 @@ for (i in 1:repetitions) {
   sim_p <- sum(sim_weekday_or_end == "Weekday") / n
   sim[i] <- sim_p
 }
-#build a plot with simulated data
+#build a plot with simulated data (simulated distribution of weekday)
 sim <- data_frame(p_weekdays = sim)
 sim %>% ggplot(aes(x = p_weekdays)) +
-  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "grey") +
-  labs(x = "Proportion weekdays in 18178 days" )
-
-
+  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "pink") + ggtitle("Simulated Distribution of Weekdays") + labs(x = "Proportion weekdays in 18178 auto thefts" )
 ```
 
 ```{r}
+#proportion of weekday/total (test statistic)
 neighbourhood %>% filter(!is.na(week_end_or_day))%>%
   summarise(n(),
             n_weekday = sum(week_end_or_day == "Weekday"),
             prop = n_weekday / n()) 
 ```
 ```{r}
-#p_hat
-13167/(13167+5008)
-#     = 0.7244567
 #test statistic
+      13167/(13167+5008)
+#     = 0.7244567
+
       5/7 - (0.7243371 - 5/7)
 #     = 0.7042343
 #p-value
@@ -116,11 +107,11 @@ neighbourhood %>% filter(!is.na(week_end_or_day))%>%
 #     = 0.004
 ```
 
-
 ```{r}
+#histogram of datime and nighttime
 neighbourhood %>% 
   filter(!is.na(time_of_day)) %>%
-  ggplot(aes(x = time_of_day)) + geom_bar()
+  ggplot(aes(x = time_of_day)) + geom_bar(color = "black", fill = "lightblue") + ggtitle("Daytime vs Nighttime")
 ```
 
 ```{r}
@@ -138,31 +129,32 @@ for (i in 1:repetitions) {
   sim_p <- sum(sim_time_of_day == "Day") / n
   sim[i] <- sim_p
 }
-#build a plot with simulated data
+#build a plot with simulated data (simulated distribution of daytime)
 sim <- data_frame(p_day = sim)
-ggplot(sim, aes(p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") + labs(x = "Proportion day time in 18178 days" )
+sim %>% ggplot(aes(x = p_day)) +
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + labs(x = "Proportion day time in 18178 auto thefts" )
 ```
 
 ```{r}
+#proportion of day time (test statistic)
 neighbourhood %>% filter(!is.na(time_of_day))%>%
   summarise(n(),
             n_daytime = sum(time_of_day == "Day"),
             prop = n_daytime / n())
-
+            
 ```
 
 ```{r}
-#p_hat
-6509/(18178)
-#     = 0.3580702
 #test statistic
-      0.5 - (0.3580702 - 0.5/7)
-#     = 0.2133584
+      6509/(18178)
+#     = 0.3580702
+
+      0.5 - (0.3580702 - 0.5)
+#     = 0.6419298
 #p-value
-      sim %>% filter(p_day >= 0.3580702 | p_day <= 0.2133584) %>%
+      sim %>% filter(p_day >= 0.6419298 | p_day <= 0.3580702) %>%
         summarise(p_value = n() / repetitions)
-#     = 0.004
+#     = 0
 
 ```
 
