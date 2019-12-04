@@ -14,6 +14,9 @@ output:
 # echo=FALSE will stop the code chunk from appearing in the knit document
 # warning=FALSE and message=FALSE will stop R messages from appearing in the knit document
 library(tidyverse)
+library(rpart)
+install.packages("partykit")
+library(partykit)
 auto_thefts <- read.csv("auto_thefts.csv")
 neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
   mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday    "| occurrencedayofweek == "Saturday  ", yes = "Weekend", no = "Weekday")) %>%
@@ -216,7 +219,7 @@ neighbourhood %>%
 ```
 
 ```{r}
-# simulation of incidence occurancein seasons. 
+# simulation of incidence occurrence in seasons. 
 n_observations <- 18178
 repetitions <- 1000
 simulated_stats <- rep(NA, repetitions)
@@ -240,6 +243,11 @@ sim %>%
 filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
 summarise(p_value = n() / repetitions)
 ```
+
+
+## Simulation Between Spring/Summer, Fall/Winter and the occurrence of thefts during peak time - that is at midnight
+## Permutation Test to Measure the proportion between the seasons
+
 ```{r}
 #based on our observations, there is a great spike in crimes during midnight
 #therefore conduct a permutation test to see whether the prop of crimes at midnight is correlated to the seasons
@@ -291,11 +299,13 @@ ggplot(sim, aes(x = p_diff)) + geom_histogram(binwidth = 0.001, colour = "black"
   geom_vline(xintercept = -1*abs(test_stat), color = "red")
 
 ```
+## Classification Tree by Johnson
+## Want to create predictions on auto theft depending on the month(split by warm whether and cold whether) and time of day
+## The intuition is whether the temperature affects what time of the day a auto theft will occur
 ```{r}
 
 
-neighbourhood1 <- neighbourhood %>%
-   mutate(hot_or_not = ifelse(occurrencemonth == "April"|occurrencemonth == "May"|occurrencemonth == "June"|occurrencemonth == "July"|occurrencemonth == "August"|occurrencemonth == "September", yes= "Yes", no = "No")) 
+neighnourhood1 <- neighbourhood %>% mutate(hot_or_not = ifelse(season == "Spring_Summer", yes= "Yes", no = "No")) 
 
 tree1 <- rpart(hot_or_not ~ occurrencehour, data = neighbourhood1)
 plot(as.party(tree1), gp=gpar(cex=0.8), type="simple")
@@ -318,3 +328,5 @@ table(prediction_matrix, test$hot_or_not)
 #Here we decide to test our classification tree using a 80/20 percent split. According to the prediction tree, we can calculate our test positives and negatives etc.
 
 #Accurary = (1000 + 943) / 3636 = 0.534. Not incredibly accurate, but in conjuction with the classification tree, provides some inclination for when crimes will occur depending on the month. 
+
+```
