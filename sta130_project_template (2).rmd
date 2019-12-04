@@ -107,7 +107,7 @@ neighbourhood %>%
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
 # simulation of incidence occurance in seasons. 
-n_observations <- n()
+n_observations <- 18178
 repetitions <- 1000
 simulated_stats <- rep(NA, repetitions)
 set.seed(1071)
@@ -154,7 +154,7 @@ neighbourhood %>%
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
 #simulation for time of day
-n <- n()
+n <- 18178
 repetitions <- 1000
 sim <- rep(NA, repetitions)
 set.seed(1071)
