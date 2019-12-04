@@ -91,11 +91,11 @@ neighbourhood %>%
 
 ## Question 1 Results
 
-**Method Used:**
-- Simulation with a single variable was run 1000 times
+**Method Used:** Simulation with a single variable was run 1000 times
 
-**Results:**
-- No evidence against our null hypothesis
+**Null Hypthothesis:** The proportion of auto thefts int he Spring/Summer is the same as the proportion in the Winter/Fall
+
+**Results:** No evidence against our null hypothesis
 
 
 ```{r echo=FALSE, warning=FALSE}
