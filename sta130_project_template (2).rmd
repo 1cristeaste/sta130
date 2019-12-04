@@ -37,7 +37,7 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 
 1. Does the proportion of auto thefts in the spring/summer differ from the proportion during fall/winter?
 2. Does the number of autothefts show a significant correlation depending on whether it is during the day or the night?
-3. Does the number of autothefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall?
+3. Does the number of autothefts show a significant correlation depending on whether it is during the spring/summer or winter/fall at midnight?
 
 # Data Visualization
 
@@ -147,8 +147,8 @@ Does the number of autothefts show a significant correlation depending on whethe
 neighbourhood %>% 
   filter(!is.na(time_of_day)) %>%
   ggplot(aes(x = time_of_day)) + geom_bar(color = "black", fill = "lightblue")+
-  ggtitle("Number of Autothefts based on Day time \nvs Night time")+
-  labs(x= "Day time vs Night time", y= "Number of Autothefts")+
+  ggtitle("Number of Autothefts based on Daytime \nvs Nighttime")+
+  labs(x= "Daytime vs Nighttime", y= "Number of Autothefts")+
   theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
         plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
@@ -180,7 +180,7 @@ for (i in 1:repetitions) {
 #build a plot with simulated data
 sim <- data_frame(p_day = sim)
 sim %>% ggplot(aes(x = p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18175 auto thefts" )
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion daytime in 18175 auto thefts" )
 ```
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
