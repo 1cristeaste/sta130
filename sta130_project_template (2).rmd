@@ -240,7 +240,57 @@ sim %>%
 filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
 summarise(p_value = n() / repetitions)
 ```
+```{r}
+#based on our observations, there is a great spike in crimes during midnight
+#therefore conduct a permutation test to see whether the prop of crimes at midnight is correlated to the seasons
+#Calculating test statistics
 
+p_neighbourhood <- neighbourhood %>% filter(!is.na(season))
+  
+n_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(n())
+n_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(n())
+ 
+p_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(prop_SS = sum(occurrencehour == 0))
+p_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(prop_FW = sum(occurrencehour == 0))
+  
+test_stat <- as.numeric(p_springsummer / n_springsummer - p_fallwinter / n_fallwinter)
+ 
+
+```
+$H_0: pfallwinter = pspringsummer$
+$H_A: pfallwinter \neq pspringsummer$
+
+```{r}
+#Simulate test statistic under null hypothesis
+n_observations <- 18178
+repetitions <- 1000
+simulated_stats <- rep(NA, repetitions)
+set.seed(1071)
+for (i in 1:repetitions)
+{
+ sim <- p_neighbourhood %>%
+   mutate(season = sample(season))
+p_springsummer <- sim %>% 
+  filter(season == "Spring_Summer") %>% 
+  summarize(prop_SS = sum(occurrencehour == 0))
+
+p_fallwinter <- sim %>% 
+  filter(season == "Fall_Winter") %>% 
+  summarize(prop_FW = sum(occurrencehour == 0))
+
+p_diff <- p_springsummer / n_springsummer - p_fallwinter / n_fallwinter
+simulated_stats[i] <- as.numeric(p_diff)
+}
+
+#Simulation Graph
+sim <- data.frame(p_diff = simulated_stats)
+
+ggplot(sim, aes(x = p_diff)) + geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") +
+  xlab("Simulated Proportions of Midnight Autothefts in Warm and Cold Seaons") +   
+  geom_vline(xintercept = abs(test_stat), color ="red") + 
+  geom_vline(xintercept = -1*abs(test_stat), color = "red")
+
+```
 ```{r}
 
 
