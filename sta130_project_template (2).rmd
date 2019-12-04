@@ -46,17 +46,22 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 ```{r, echo=FALSE, warning=FALSE, fig.align = "center"}
 neighbourhood %>% filter(!is.na(occurrencemonth)) %>% ggplot(aes(x = occurrencemonth, fill = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
   labs (x = "Month", y = "Number of Auto Thefts")+coord_flip()+
-  scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
-
+  scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))+
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 ```
 
 ---
 
 
-```{r  echo=FALSE, warning=FALSE}
+```{r  echo=FALSE, warning=FALSE, fig.align = "center"}
 neighbourhood %>% ggplot(aes(x = occurrencehour, fill = time_of_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Time \nof the Day")+
   labs (x = "Time of the day (by hour)", y = "Number of Auto Thefts")+
-  scale_fill_discrete(name="Time of Day")
+  scale_fill_discrete(name="Time of Day")+
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 ```
 
 
@@ -75,8 +80,11 @@ Does the proportion of auto thefts in the spring/summer differ from the proporti
 neighbourhood %>%
   filter(!is.na(season))%>%
   ggplot(aes(x = season))+geom_bar(color = "black", fill = "lightblue")+
-  ggtitle("Number of Autothefts based on Spring/Summer and Fall/Winter")+
-  labs (x = "Spring/Summer vs Fall/Winter", y = "Number of Autothefts")
+  ggtitle("Number of Autothefts based on Spring/Summer \nand Fall/Winter")+
+  labs (x = "Spring/Summer vs Fall/Winter", y = "Number of Autothefts")+
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 ```
 
 
@@ -139,8 +147,11 @@ Does the number of autothefts show a significant correlation depending on whethe
 neighbourhood %>% 
   filter(!is.na(time_of_day)) %>%
   ggplot(aes(x = time_of_day)) + geom_bar(color = "black", fill = "lightblue")+
-  ggtitle("Number of Autothefts based on Daytime vs Nighttime")+
-  labs(x= "Daytime vs Nighttime", y= "Number of Autothefts")
+  ggtitle("Number of Autothefts based on Day time \nvs Night time")+
+  labs(x= "Day time vs Night time", y= "Number of Autothefts")+
+  theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
 ```
 
 ## Question 2 Results
@@ -205,7 +216,7 @@ neighbourhood %>% filter(!is.na(occurrencehour), !is.na(occurrencemonth)) %>%
   theme_bw()+
     theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
-        plot.title = element_text(size = 18, face = "bold"))+
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))+
   scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
 ```
 
@@ -243,7 +254,6 @@ p_fallwinter <- sim %>%
 p_diff <- p_springsummer / n_springsummer - p_fallwinter / n_fallwinter
 simulated_stats[i] <- as.numeric(p_diff)
 }
-
 n <- nrow(neighbourhood1)
 set.seed(1071)
 training_indices <- sample(1:n, size=round(0.8*n))
@@ -260,7 +270,11 @@ prediction_matrix <- predict(object = train_tree, newdata = test, type = "class"
 
 ## Question 3 Results
 
-- [INSERT RESULTS]
+**Methods Used:**
+
+**Null Hypothesis:**
+
+**Results:**
 
 
 ## Results
