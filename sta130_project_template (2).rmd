@@ -107,7 +107,7 @@ neighbourhood %>%
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
 # simulation of incidence occurance in seasons. 
-n_observations <- 18178
+n_observations <- 18175
 repetitions <- 1000
 simulated_stats <- rep(NA, repetitions)
 set.seed(1071)
@@ -154,7 +154,7 @@ neighbourhood %>%
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
 #simulation for time of day
-n <- 18178
+n <- 18175
 repetitions <- 1000
 sim <- rep(NA, repetitions)
 set.seed(1071)
@@ -169,7 +169,7 @@ for (i in 1:repetitions) {
 #build a plot with simulated data
 sim <- data_frame(p_day = sim)
 sim %>% ggplot(aes(x = p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18178 auto thefts" )
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18175 auto thefts" )
 ```
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
@@ -182,7 +182,7 @@ neighbourhood %>% filter(!is.na(time_of_day))%>%
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
 #p_hat for time of day
-6509/(18178)
+6509/(18175)
 #     = 0.3580702
 #test statistic
       0.5 - (0.3580702 - 0.5)
@@ -226,7 +226,7 @@ p_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summ
 p_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(prop_FW = sum(occurrencehour == 0))
   
 test_stat <- as.numeric(p_springsummer / n_springsummer - p_fallwinter / n_fallwinter)
-n_observations <- 18178
+n_observations <- 18175
 repetitions <- 1000
 simulated_stats <- rep(NA, repetitions)
 set.seed(1071)
