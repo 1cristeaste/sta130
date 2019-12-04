@@ -21,7 +21,7 @@ library(rpart)
 library(partykit)
 library(knitr)
 auto_thefts <- read.csv("auto_thefts.csv")
-neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
+neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour) %>% filter(occurrencemonth != '' & occurrencedayofweek != '') %>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
   mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday    "| occurrencedayofweek == "Saturday  ", yes = "Weekend", no = "Weekday")) %>%
   mutate(time_of_day= ifelse(occurrencehour >= 18|occurrencehour <= 6, yes = "Night", no= "Day"))
 ```
