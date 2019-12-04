@@ -1,12 +1,14 @@
-
 ---
 title: "The Inclination for Auto Thefts in Relation to Time"
-author: "Stephanie Cristea, Nicole Sin, Johnson Vo, Shuyi Zuo, TUT107, Group Number: 1"
-subtitle: "Based on Auto Thefts data from Toronto provided by the the Toronto POlice Service and from the years 2014-2018"
+author: 'Stephanie Cristea, Nicole Sin, Johnson Vo, Lily Zuo, TUT107, Group Number:
+  1'
+subtitle: Based on Auto Thefts data from Toronto provided by the the Toronto Police
+  Service and from the years 2014-2018
 output:
   ioslides_presentation: default
-  widescreen: yes
+  slidy_presentation: default
   transition: faster
+  widescreen: yes
 ---
 
 
@@ -15,8 +17,9 @@ output:
 # warning=FALSE and message=FALSE will stop R messages from appearing in the knit document
 library(tidyverse)
 library(rpart)
-install.packages("partykit")
+#install.packages("partykit")
 library(partykit)
+library(knitr)
 auto_thefts <- read.csv("auto_thefts.csv")
 neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayofweek, occurrencehour)%>% mutate(season = ifelse((occurrencemonth == 'March'| occurrencemonth == 'April'| occurrencemonth == 'May'| occurrencemonth == 'June'| occurrencemonth == 'July'| occurrencemonth == 'August'), yes = "Spring_Summer", no = "Fall_Winter"))%>%
   mutate(week_end_or_day = ifelse(occurrencedayofweek == "Sunday    "| occurrencedayofweek == "Saturday  ", yes = "Weekend", no = "Weekday")) %>%
@@ -25,13 +28,14 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 ## Goals
 
 - Analyze whether time acts as a factor in the number of auto thefts - is there an inclination to when these crimes occur? 
+  - Take an intricate look at the effect of the season and the hour on number of auto thefts
 - Determine peak time when these crimes occur; when the public should take better precautions protecting their cars 
 - Determine when police officers should be more prepared for auto-thefts based on when they take place more often
 
 
 ## Questions of Analysis
 
-1. Does the number of auto thefts show a significant correlation depending on whether it is a weekend vs a weekday?
+1. Does the proportion of auto thefts in the spring/summer differ from the proportion during fall/winter?
 2. Does the number of autothefts show a significant correlation depending on whether it is during the day or the night?
 3. Does the number of autothefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall?
 
@@ -39,14 +43,22 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 
 ---
 
-```{r, echo=FALSE, warning=FALSE, fig.height = 3, fig.width= 4, .columns-2}
-neighbourhood %>% ggplot(aes(x = occurrencemonth, colour = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
-  labs (x = "Month", y = "Number of Auto Thefts") + coord_flip()
-neighbourhood %>% ggplot(aes(x = occurrencedayofweek, colour = week_end_or_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending \non the Day of the Week")+
-  labs (x ="Day of the Week", y = "Number of Auto Thefts") + coord_flip()
-neighbourhood %>% ggplot(aes(x = occurrencehour, colour = time_of_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Time \nof the Day")+
-  labs (x = "Time of the day (by hour)", y = "Number of Auto Thefts")
+```{r, echo=FALSE, warning=FALSE, fig.align = "center"}
+neighbourhood %>% filter(!is.na(occurrencemonth)) %>% ggplot(aes(x = occurrencemonth, fill = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
+  labs (x = "Month", y = "Number of Auto Thefts")+coord_flip()+
+  scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
+
 ```
+
+---
+
+
+```{r  echo=FALSE, warning=FALSE}
+neighbourhood %>% ggplot(aes(x = occurrencehour, fill = time_of_day)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Time \nof the Day")+
+  labs (x = "Time of the day (by hour)", y = "Number of Auto Thefts")+
+  scale_fill_discrete(name="Time of Day")
+```
+
 
 ## Data Summary
 The following variables were created to address our questions of analysis:
@@ -57,19 +69,67 @@ The following variables were created to address our questions of analysis:
 
 
 ## Question 1: 
-Does the number of auto thefts show a significant correlation depending on whether it is a weekend vs a weekday?
+Does the proportion of auto thefts in the spring/summer differ from the proportion during fall/winter?
 
-```{r, echo=FALSE, warning=FALSE}
-neighbourhood %>% 
-  filter(!is.na(week_end_or_day)) %>%
-  ggplot(aes(x = week_end_or_day)) + geom_bar(color = "black", fill = "pink")+
-  ggtitle("Number of Auto Thefts based on Weekdays vs Weekends")+
-  labs (x = "Weekday vs Weekends", y = "Number of Auto Thefts")
+```{r echo=FALSE, warning=FALSE}
+neighbourhood %>%
+  filter(!is.na(season))%>%
+  ggplot(aes(x = season))+geom_bar(color = "black", fill = "lightblue")+
+  ggtitle("Number of Autothefts based on Spring/Summer and Fall/Winter")+
+  labs (x = "Spring/Summer vs Fall/Winter", y = "Number of Autothefts")
 ```
+
+
 
 ## Question 1 Results
 
-- [INSERT RESULTS]
+**Method Used:**
+- Simulation with a single variable was run 1000 times
+
+**Results:**
+- No evidence against our null hypothesis
+
+
+```{r echo=FALSE, warning=FALSE}
+# null hypothesis: the proportion of the incidence happened in spring and summer is 0.5.
+# alternative hypothesis: the proportion of the incidence happened in spring and summer is not 0.5.
+```
+
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+# test statistic
+neighbourhood %>%
+  filter(!is.na(season)) %>%
+  summarise(n(),
+            n_springsummer = sum (season == "Spring_Summer"),
+            prop_springsummer = n_springsummer/n())
+```
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+# simulation of incidence occurance in seasons. 
+n_observations <- 18178
+repetitions <- 1000
+simulated_stats <- rep(NA, repetitions)
+set.seed(1071)
+for (i in 1:repetitions)
+{
+new_sim <- sample(c("Spring_Summer", "Fall_Winter"),
+size = n_observations, prob=c(0.5,0.5), replace = TRUE)
+sim_p <- sum(new_sim == "Spring_Summer") / n_observations
+simulated_stats[i] <- sim_p
+}
+sim <- data_frame(p_springsummer = simulated_stats)
+sim %>% ggplot(aes(x = p_springsummer)) +
+geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") +
+xlab("simulated proportion that the incidence happened in spring and summer")
+```
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+# estimated p_value
+sim %>%
+filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
+summarise(p_value = n() / repetitions)
+```
 
 
 ## Question 2:
@@ -85,18 +145,118 @@ neighbourhood %>%
 
 ## Question 2 Results
 
-- [INSERT RESULTS]
+**Null Hypothesis:** The proportion of auto thefts in the daytime and the nighttime are equal (50% happen at night vs 50% happen during the day)
+
+**Method Used:** Simulation with a single variable was run 1000 times
+
+**Results:** Very strong evidence against the Null hypothesis
+
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+#simulation for time of day
+n <- 18178
+repetitions <- 1000
+sim <- rep(NA, repetitions)
+set.seed(1071)
+for (i in 1:repetitions) {
+  sim_time_of_day <- sample(c("Day", "Night"),
+       size = n,
+       prob = c(0.5, 0.5),
+       replace = TRUE) 
+  sim_p <- sum(sim_time_of_day == "Day") / n
+  sim[i] <- sim_p
+}
+#build a plot with simulated data
+sim <- data_frame(p_day = sim)
+sim %>% ggplot(aes(x = p_day)) +
+  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18178 auto thefts" )
+```
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+#results for time of day
+neighbourhood %>% filter(!is.na(time_of_day))%>%
+  summarise(n(),
+            n_daytime = sum(time_of_day == "Day"),
+            prop = n_daytime / n())
+```
+
+```{r echo=FALSE, warning=FALSE, eval = FALSE}
+#p_hat for time of day
+6509/(18178)
+#     = 0.3580702
+#test statistic
+      0.5 - (0.3580702 - 0.5)
+#     = 0.6419298
+#p-value
+      sim %>% filter(p_day >= 0.6419298 | p_day <= 0.3580702) %>%
+        summarise(p_value = n() / repetitions)
+#     = 0
+```
+
 
 ## Question 3:
-Does the number of autothefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall?
+Does the number of autothefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall at midnight?
+
+```{r, echo=FALSE, warning=FALSE}
+neighbourhood %>% filter(!is.na(occurrencehour), !is.na(occurrencemonth)) %>% 
+  ggplot (aes(x = occurrencehour, y= "N", fill = season))+
+  geom_bar(stat="identity")+
+  labs(title = "Number of Auto Thefts Depending on the Hour\nand Season", x="Hour", y="Number of Auto Thefts", colour = "Seasons")+
+  theme_bw()+
+    theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
+        axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
+        plot.title = element_text(size = 18, face = "bold"))+
+  scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
+```
+
+## Classification Tree Depending on Midnight Proportions and Seasons
+```{r echo=FALSE, warning=FALSE, eval=TRUE}
+neighbourhood1 <- neighbourhood %>% filter(!is.na(season)) %>% mutate(hot_or_not = ifelse(season == "Spring_Summer", yes= "Yes", no = "No")) 
+tree1 <- rpart(hot_or_not ~ occurrencehour, data = neighbourhood1)
+plot(as.party(tree1), gp=gpar(cex=0.8), type="simple")
+```
 
 ```{r echo=FALSE, warning=FALSE}
-neighbourhood %>%
-  filter(!is.na(season))%>%
-  ggplot(aes(x = season))+geom_bar()+
-  ggtitle("Number of Autothefts based on Spring/Summer and Fall/Winter")+
-  labs (x = "Spring/Summer vs Fall/Winter", y = "Number of Autothefts")
+p_neighbourhood <- neighbourhood %>% filter(!is.na(season))
+  
+n_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(n())
+n_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(n())
+ 
+p_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(prop_SS = sum(occurrencehour == 0))
+p_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(prop_FW = sum(occurrencehour == 0))
+  
+test_stat <- as.numeric(p_springsummer / n_springsummer - p_fallwinter / n_fallwinter)
+n_observations <- 18178
+repetitions <- 1000
+simulated_stats <- rep(NA, repetitions)
+set.seed(1071)
+for (i in 1:repetitions)
+{
+ sim <- p_neighbourhood %>%
+   mutate(season = sample(season))
+p_springsummer <- sim %>% 
+  filter(season == "Spring_Summer") %>% 
+  summarize(prop_SS = sum(occurrencehour == 0))
+p_fallwinter <- sim %>% 
+  filter(season == "Fall_Winter") %>% 
+  summarize(prop_FW = sum(occurrencehour == 0))
+p_diff <- p_springsummer / n_springsummer - p_fallwinter / n_fallwinter
+simulated_stats[i] <- as.numeric(p_diff)
+}
+
+n <- nrow(neighbourhood1)
+set.seed(1071)
+training_indices <- sample(1:n, size=round(0.8*n))
+train <- neighbourhood1[training_indices,]
+test <- neighbourhood1[-training_indices,]
+train_tree <- rpart(hot_or_not ~ occurrencehour, data = train)
+prediction_matrix <- predict(object = train_tree, newdata = test, type = "class")            
 ```
+
+
+
+
+
 
 ## Question 3 Results
 
@@ -117,216 +277,3 @@ Here you can also mention any additional considerations, concerns, or issues you
 
 If you received any help from someone other than your team members you can acknowledge them. For example:   
 *The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
-
-```{r}
-#simulation for time of week
-n <- 18178 
-repetitions <- 1000
-sim <- rep(NA, repetitions)
-set.seed(1071)
-for (i in 1:repetitions) {
-  sim_weekday_or_end <- sample(c("Weekday", "Weekend"),
-       size = n,
-       prob = c(5/7, 2/7),
-       replace = TRUE) 
-  sim_p <- sum(sim_weekday_or_end == "Weekday") / n
-  sim[i] <- sim_p
-}
-#build a plot with simulated data
-sim <- data_frame(p_weekdays = sim)
-sim %>% ggplot(aes(x = p_weekdays)) +
-  geom_histogram(binwidth = 0.001, bins = 30, colour = "black", fill = "pink") + ggtitle("Simulated Distribution of Weekdays") + labs(x = "Proportion weekdays in 18178 days" )
-```
-
-```{r}
-#time of week
-neighbourhood %>% filter(!is.na(week_end_or_day))%>%
-  summarise(n(),
-            n_weekday = sum(week_end_or_day == "Weekday"),
-            prop_weekday = n_weekday / n()) 
-```
-
-```{r}
-#p_hat for day of week
-13167/(13167+5008)
-#     = 0.7244567
-#test statistic
-      5/7 - (0.7243371 - 5/7)
-#     = 0.7042343
-#p-value
-      sim %>% filter(p_weekdays >= 0.7244567 | p_weekdays <= 0.7042343) %>%
-        summarise(p_value = n() / repetitions)
-#     = 0.004
-```
-
-```{r}
-#simulation for time of day
-n <- 18178
-repetitions <- 1000
-sim <- rep(NA, repetitions)
-set.seed(1071)
-for (i in 1:repetitions) {
-  sim_time_of_day <- sample(c("Day", "Night"),
-       size = n,
-       prob = c(0.5, 0.5),
-       replace = TRUE) 
-  sim_p <- sum(sim_time_of_day == "Day") / n
-  sim[i] <- sim_p
-}
-#build a plot with simulated data
-sim <- data_frame(p_day = sim)
-sim %>% ggplot(aes(x = p_day)) +
-  geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") + ggtitle("Simulated Distribution of daytime") + labs(x = "Proportion day time in 18178 auto thefts" )
-```
-
-```{r}
-#results for time of day
-neighbourhood %>% filter(!is.na(time_of_day))%>%
-  summarise(n(),
-            n_daytime = sum(time_of_day == "Day"),
-            prop = n_daytime / n())
-```
-
-```{r}
-#p_hat for time of day
-6509/(18178)
-#     = 0.3580702
-#test statistic
-      0.5 - (0.3580702 - 0.5)
-#     = 0.6419298
-#p-value
-      sim %>% filter(p_day >= 0.6419298 | p_day <= 0.3580702) %>%
-        summarise(p_value = n() / repetitions)
-#     = 0
-```
-
-
-#simulation of the seasons
-```{r}
-# null hypothesis: the proportion of the incidence happened in spring and summer is 0.5.
-# alternative hypothesis: the proportion of the incidence happened in spring and summer is not 0.5.
-```
-$H_0: p = 0.1$
-$H_A: p \neq 0.1$
-
-```{r}
-# test statistic
-neighbourhood %>%
-  filter(!is.na(season)) %>%
-  summarise(n(),
-            n_springsummer = sum (season == "Spring_Summer"),
-            prop_springsummer = n_springsummer/n())
-```
-
-```{r}
-# simulation of incidence occurrence in seasons. 
-n_observations <- 18178
-repetitions <- 1000
-simulated_stats <- rep(NA, repetitions)
-set.seed(1071)
-for (i in 1:repetitions)
-{
-new_sim <- sample(c("Spring_Summer", "Fall_Winter"),
-size = n_observations, prob=c(0.5,0.5), replace = TRUE)
-sim_p <- sum(new_sim == "Spring_Summer") / n_observations
-simulated_stats[i] <- sim_p
-}
-sim <- data_frame(p_springsummer = simulated_stats)
-sim %>% ggplot(aes(x = p_springsummer)) +
-geom_histogram(binwidth = 0.001, colour = "black", fill = "grey") +
-xlab("simulated proportion that the incidence happened in spring and summer")
-```
-
-```{r}
-# estimated p_value
-sim %>%
-filter(p_springsummer >= 0.5035488 | p_springsummer <= 0.4964512) %>%
-summarise(p_value = n() / repetitions)
-```
-
-
-## Simulation Between Spring/Summer, Fall/Winter and the occurrence of thefts during peak time - that is at midnight
-## Permutation Test to Measure the proportion between the seasons
-
-```{r}
-#based on our observations, there is a great spike in crimes during midnight
-#therefore conduct a permutation test to see whether the prop of crimes at midnight is correlated to the seasons
-#Calculating test statistics
-
-p_neighbourhood <- neighbourhood %>% filter(!is.na(season))
-  
-n_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(n())
-n_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(n())
- 
-p_springsummer <- p_neighbourhood %>% filter(season == "Spring_Summer") %>% summarize(prop_SS = sum(occurrencehour == 0))
-p_fallwinter <- p_neighbourhood %>% filter(season == "Fall_Winter") %>% summarize(prop_FW = sum(occurrencehour == 0))
-  
-test_stat <- as.numeric(p_springsummer / n_springsummer - p_fallwinter / n_fallwinter)
- 
-
-```
-$H_0: pfallwinter = pspringsummer$
-$H_A: pfallwinter \neq pspringsummer$
-
-```{r}
-#Simulate test statistic under null hypothesis
-n_observations <- 18178
-repetitions <- 1000
-simulated_stats <- rep(NA, repetitions)
-set.seed(1071)
-for (i in 1:repetitions)
-{
- sim <- p_neighbourhood %>%
-   mutate(season = sample(season))
-p_springsummer <- sim %>% 
-  filter(season == "Spring_Summer") %>% 
-  summarize(prop_SS = sum(occurrencehour == 0))
-
-p_fallwinter <- sim %>% 
-  filter(season == "Fall_Winter") %>% 
-  summarize(prop_FW = sum(occurrencehour == 0))
-
-p_diff <- p_springsummer / n_springsummer - p_fallwinter / n_fallwinter
-simulated_stats[i] <- as.numeric(p_diff)
-}
-
-#Simulation Graph
-sim <- data.frame(p_diff = simulated_stats)
-
-ggplot(sim, aes(x = p_diff)) + geom_histogram(binwidth = 0.001, colour = "black", fill = "lightblue") +
-  xlab("Simulated Proportions of Midnight Autothefts in Warm and Cold Seaons") +   
-  geom_vline(xintercept = abs(test_stat), color ="red") + 
-  geom_vline(xintercept = -1*abs(test_stat), color = "red")
-
-```
-## Classification Tree by Johnson
-## Want to create predictions on auto theft depending on the month(split by warm whether and cold whether) and time of day
-## The intuition is whether the temperature affects what time of the day a auto theft will occur
-```{r}
-
-
-neighnourhood1 <- neighbourhood %>% mutate(hot_or_not = ifelse(season == "Spring_Summer", yes= "Yes", no = "No")) 
-
-tree1 <- rpart(hot_or_not ~ occurrencehour, data = neighbourhood1)
-plot(as.party(tree1), gp=gpar(cex=0.8), type="simple")
-
-#Regression on the time of day(hour) when auto theft occurs and whether they occur in a warm month (April - September) or a cold month. #Basically the graph says in general, crimes occur more often at night during warm months, and occur during daytimes during cold months. 
-
-n <- nrow(neighbourhood1)
-
-set.seed(1071)
-training_indices <- sample(1:n, size=round(0.8*n))
-train <- neighbourhood1[training_indices,]
-test <- neighbourhood1[-training_indices,]
-
-train_tree <- rpart(hot_or_not ~ occurrencehour, data = train)
-plot(as.party(train_tree), type="simple", gp=gpar(cex=0.8))
-
-prediction_matrix <- predict(object = train_tree, newdata = test, type = "class")            
-table(prediction_matrix, test$hot_or_not)
-
-#Here we decide to test our classification tree using a 80/20 percent split. According to the prediction tree, we can calculate our test positives and negatives etc.
-
-#Accurary = (1000 + 943) / 3636 = 0.534. Not incredibly accurate, but in conjuction with the classification tree, provides some inclination for when crimes will occur depending on the month. 
-
-```
