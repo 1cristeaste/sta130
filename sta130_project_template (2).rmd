@@ -242,14 +242,7 @@ summarise(p_value = n() / repetitions)
 ```
 
 ```{r}
-#linear regression between time(occurrencehour) and auto thefts
-#mod_thefts <- lm(occurrencehour ~ occurrenceday, data = auto_thefts)
-#summary(mod_thefts)$coefficients
 
-#auto_thefts %>% ggplot(aes(x=occurrenceday, y=occurrencehour)) + geom_point() +
-#geom_smooth(method="lm", se=FALSE) + theme_minimal()
-
-#This stuff above doesn't work, can't do regression on auto thefts.
 
 neighbourhood1 <- neighbourhood %>%
    mutate(hot_or_not = ifelse(occurrencemonth == "April"|occurrencemonth == "May"|occurrencemonth == "June"|occurrencemonth == "July"|occurrencemonth == "August"|occurrencemonth == "September", yes= "Yes", no = "No")) 
