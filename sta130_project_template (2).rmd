@@ -270,11 +270,11 @@ prediction_matrix <- predict(object = train_tree, newdata = test, type = "class"
 
 ## Question 3 Results
 
-**Methods Used:**
+**Methods Used:** Classification Tree & Permutation Test
 
-**Null Hypothesis:**
+**Null Hypothesis:** The proportion of auto thefts occuring at midnight between spring/summer seasons and fall/winter seaons are the same.
 
-**Results:**
+**Results:** The classification tree predicts the likelihood of crimes occuring at what time and what season; specifically late night crimes are predicted to be fall/winter crimes and daytime crimes are predicted to be spring/summer.
 
 
 ## Results
