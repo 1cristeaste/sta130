@@ -51,7 +51,11 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 ---
 
 ```{r, echo=FALSE, warning=FALSE, fig.align = "center"}
-neighbourhood %>% filter(!is.na(occurrencemonth)) %>% ggplot(aes(x = occurrencemonth, fill = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
+neighbourhood %>% filter(!is.na(occurrencemonth)) %>%  mutate(month = factor(occurrencemonth, 
+                    levels = c("January", "February", "March", "April", 
+                               "May", "June", "July", "August", 
+                               "September", "October", "November", "December"), ordered = TRUE)) %>%
+  ggplot(aes(x = month, fill = season)) + geom_bar() + ggtitle("Number of Auto Thefts Depending on the Months \nof the Year") +
   labs (x = "Month", y = "Number of Auto Thefts")+coord_flip()+
   scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))+
   theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
