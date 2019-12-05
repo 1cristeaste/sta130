@@ -27,17 +27,24 @@ neighbourhood <- auto_thefts %>% select(Index_, occurrencemonth, occurrencedayof
 ```
 ## Goals
 
-- Analyze whether time acts as a factor in the number of auto thefts - is there an inclination to when these crimes occur? 
+- Analyze whether time acts as a factor in the number of auto thefts; is there an inclination to when these crimes occur? 
   - Take an intricate look at the effect of the season and the hour on number of auto thefts
+  
 - Determine peak time when these crimes occur; when the public should take better precautions protecting their cars 
+
 - Determine when police officers should be more prepared for auto-thefts based on when they take place more often
 
 
 ## Questions of Analysis
 
 1. Does the proportion of auto thefts in the spring/summer differ from the proportion during fall/winter?
-2. Does the number of autothefts show a significant correlation depending on whether it is during the day or the night?
-3. Does the number of autothefts show a significant correlation depending on whether it is during the spring/summer or winter/fall at midnight?
+
+
+2. Does the number of auto thefts show a significant correlation depending on whether it is during the day or the night?
+
+
+3. Does the number of auto thefts show a significant correlation depending on whether it is during the spring/summer or winter/fall at midnight?
+
 
 # Data Visualization
 
@@ -68,9 +75,8 @@ neighbourhood %>% ggplot(aes(x = occurrencehour, fill = time_of_day)) + geom_bar
 ## Data Summary
 The following variables were created to address our questions of analysis:
 
-- A seasonal variable (categorizing an autotheft incidence as "Spring/ Summer" or "Fall/Winter")
-- A day of the week variable (categorizing an autotheft incidence as "Weekday" or "Weekend") 
-- A time of day variable (categorizing an autotheft incidence as "Day" or "Night")
+- A seasonal variable (categorizing an auto theft incidence as "Spring/Summer" or "Fall/Winter")
+- A time of day variable (categorizing an auto theft incidence as "Day" or "Night")
 
 
 ## Question 1: 
@@ -80,22 +86,24 @@ Does the proportion of auto thefts in the spring/summer differ from the proporti
 neighbourhood %>%
   filter(!is.na(season))%>%
   ggplot(aes(x = season))+geom_bar(color = "black", fill = "lightblue")+
-  ggtitle("Number of Autothefts based on Spring/Summer \nand Fall/Winter")+
-  labs (x = "Spring/Summer vs Fall/Winter", y = "Number of Autothefts")+
+  ggtitle("Number of Auto Thefts based on Spring/Summer \nand Fall/Winter")+
+  labs (x = "Seasons", y = "Number of Auto Thefts")+
   theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
-        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))+
+  scale_x_discrete(labels=c("Spring/Summer", "Fall/Winter"))+
+  geom_text(stat="count", aes(label =..count..), vjust = 2, colour = "white")
 ```
 
 
 
 ## Question 1 Results
 
-**Method Used:** Simulation with a single variable was run 1000 times
-
 **Null Hypthothesis:** The proportion of auto thefts int he Spring/Summer is the same as the proportion in the Winter/Fall
 
-**Results:** No evidence against our null hypothesis
+**Method Used:** Permutation Test
+
+**Results:** Our analysis shows that there is no evidence against our null hypthosis
 
 
 ```{r echo=FALSE, warning=FALSE}
@@ -141,26 +149,27 @@ summarise(p_value = n() / repetitions)
 
 
 ## Question 2:
-Does the number of autothefts show a significant correlation depending on whether it is during the day or the night?
+Does the number of auto thefts show a significant correlation depending on whether it is during the day or the night?
 
 ```{r, echo=FALSE, warning=FALSE}
 neighbourhood %>% 
   filter(!is.na(time_of_day)) %>%
   ggplot(aes(x = time_of_day)) + geom_bar(color = "black", fill = "lightblue")+
-  ggtitle("Number of Autothefts based on Daytime \nvs Nighttime")+
-  labs(x= "Daytime vs Nighttime", y= "Number of Autothefts")+
+  ggtitle("Number of Auto Thefts based on Daytime \nvs Nighttime")+
+  labs(x= "Daytime vs Nighttime", y= "Number of Auto Thefts")+
   theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
-        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))
+        plot.title = element_text(size = 18, face = "bold", hjust = 0.5))+
+  geom_text(stat="count", aes(label =..count..), vjust = 2, colour = "white")
 ```
 
 ## Question 2 Results
 
 **Null Hypothesis:** The proportion of auto thefts in the daytime and the nighttime are equal (50% happen at night vs 50% happen during the day)
 
-**Method Used:** Simulation with a single variable was run 1000 times
+**Method Used:** Permutation Test
 
-**Results:** Very strong evidence against the Null hypothesis
+**Results:** Our analysis shows that there is very strong evidence against our null hypothesis. 
 
 
 ```{r echo=FALSE, warning=FALSE, eval = FALSE}
@@ -206,7 +215,7 @@ neighbourhood %>% filter(!is.na(time_of_day))%>%
 
 
 ## Question 3:
-Does the number of autothefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall at midnight?
+Does the number of auto thefts show a significant correlation depending on whether it is during the Spring/Summer or Winter/Fall at midnight?
 
 ```{r, echo=FALSE, warning=FALSE}
 neighbourhood %>% filter(!is.na(occurrencehour), !is.na(occurrencemonth)) %>% 
@@ -217,10 +226,11 @@ neighbourhood %>% filter(!is.na(occurrencehour), !is.na(occurrencemonth)) %>%
     theme(axis.text.x = element_text(size = 14), axis.title.x = element_text(size = 16),
         axis.text.y = element_text(size = 14), axis.title.y = element_text(size = 16),
         plot.title = element_text(size = 18, face = "bold", hjust = 0.5))+
-  scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
+ scale_fill_discrete(name="Seasons", breaks = c("Fall_Winter", "Spring_Summer"), labels=c("Fall and Winter", "Spring and Summer"))
 ```
 
 ## Classification Tree Depending on Midnight Proportions and Seasons
+*Note: "Yes" refers to Spring/Summer months
 ```{r echo=FALSE, warning=FALSE, eval=TRUE}
 neighbourhood1 <- neighbourhood %>% filter(!is.na(season)) %>% mutate(hot_or_not = ifelse(season == "Spring_Summer", yes= "Yes", no = "No")) 
 tree1 <- rpart(hot_or_not ~ occurrencehour, data = neighbourhood1)
@@ -264,30 +274,40 @@ prediction_matrix <- predict(object = train_tree, newdata = test, type = "class"
 ```
 
 
-
-
-
-
 ## Question 3 Results
 
-**Methods Used:** Classification Tree & Permutation Test
-
 **Null Hypothesis:** The proportion of auto thefts occuring at midnight between spring/summer seasons and fall/winter seaons are the same.
+
+**Methods Used:** Classification Tree & Permutation Test
 
 **Results:** The classification tree predicts the likelihood of crimes occuring at what time and what season; specifically late night crimes are predicted to be fall/winter crimes and daytime crimes are predicted to be spring/summer.
 
 
 ## Results
 
-Present the main results here, in order of importance, related to the questions asked. You might use tables or graphs, or other ways to summarize your results.
+**From Our Analyses We Can Conclude:**
+
+- The season has little to no influence on the number of auto thefts
+- Time of day has an influence on the number of auto thefts
+  - More thefts happen at night than during the day
 
 ## Conclusion
 
-Give your main conclusions here. Follow the order of questions you presented. 
+Police should strengthen prevention of auto thefts especially during the night regardless of season, which has little to no effect on the number of auto thefts. 
 
-Here you can also mention any additional considerations, concerns, or issues you might have. For example, if the results were unexpected, you can discuss this and perhaps offer possible explanations.
+**Additional Considerations:**
 
-## Acknowledgements (optional)
+- Comparing the seasons individually instead of grouping them (Spring Vs Summer vs Fall vs Winter).  
 
-If you received any help from someone other than your team members you can acknowledge them. For example:   
-*The authors would like to thank "TA name" for helpful suggestions and comments that improved the presentation of this poster.*
+## Conclusion
+
+**Future Considerations:**
+
+- Day of the week occurrence
+- Population density
+- Neighbourhood age
+- Neighbourhood density
+- Premise type
+
+## Acknowledgements
+The authors would like to thank Vivian Ngo for helpful suggestions and comments that improved the presentation of this poster.
