@@ -1,6 +1,6 @@
 ---
 title: "The Inclination for Auto Thefts in Relation to Time"
-author: 'Stephanie Cristea, Nicole Sin, Johnson Vo, Lily Zuo, TUT107, Group Number:
+author: 'Stephanie Cristea, Nicole Sin, Johnson Vo, Shuyi Zuo, TUT107, Group Number:
   1'
 subtitle: Based on Auto Thefts data from Toronto provided by the the Toronto Police
   Service and from the years 2014-2018
