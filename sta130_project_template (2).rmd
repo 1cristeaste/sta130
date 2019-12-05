@@ -284,7 +284,7 @@ prediction_matrix <- predict(object = train_tree, newdata = test, type = "class"
 
 **Methods Used:** Classification Tree & Permutation Test
 
-**Results:** The classification tree predicts the likelihood of crimes occuring at what time and what season; specifically late night crimes are predicted to be fall/winter crimes and daytime crimes are predicted to be spring/summer.
+**Results:** The classification tree predicts the likelihood of crimes occuring at what time and what season; specifically late night crimes are predicted to be spring/summer crimes and daytime crimes are predicted to be fall/winter.
 
 
 ## Results
